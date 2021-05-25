@@ -2,11 +2,14 @@ import os
 
 import discord
 from dotenv import load_dotenv
+from api import API
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+API_URL = os.getenv('API_URL')
 
 client = discord.Client()
+api = API(API_URL)
 
 @client.event
 async def on_ready():
