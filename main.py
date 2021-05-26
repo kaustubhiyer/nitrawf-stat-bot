@@ -43,6 +43,19 @@ def clean_data(raw_data, d_type):
             cleaned_match+=[match["end_time"][:10] + " " + match["end_time"][11:16]]
             data+=[cleaned_match]
         return cols, data
+    elif (d_type == "match"):
+        # single match
+        cols = ["Name", "Avg Pos", "Avg Score", "Avg Acc", "Elo Change"]
+        data = []
+        for player in raw_data:
+            cleaned_player = []
+            cleaned_player+=[player["player_name"]]
+            cleaned_player+=[player["average_position"]]
+            cleaned_player+=[player["average_score"]]
+            cleaned_player+=[player["average_accuracy"]*100]
+            cleaned_player+=[str(player["old_elo"])+'-'+str(player['new_elo'])]
+            data+=[cleaned_player]
+        return cols, data
         
 
 
@@ -146,6 +159,28 @@ async def on_message(message):
         pass
     elif command[0] == "match":
         #implement match call
+        if len(command) != 2:
+            await message.channel.send("Wrong command, ask $help for help")
+            return
+        match_id = command[1]
+        count = 0
+        while (count < MAX_ATTEMPTS):
+            match_raw = api.get_match_summary(match_id)
+            if not match_raw:
+                count+=1
+            else:
+                break
+        if count == 3:
+            await message.channel.send("Failed to retreive from API. Please try again")
+            return
+        
+        print(match_raw[0])
+        # Need to clean match
+        cols, match = clean_data(match_raw, "match")
+        table = tabulate(match, headers=cols, tablefmt="fancy_grid", \
+            colalign=("left", "center", "center", "center", "center"))
+        await message.channel.send('```'+table+'```')
+        return
         pass
     elif command[0] == "elohistory":
         #implement elo history
