@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from api import API
 import json
 from tabulate import tabulate
+import numpy as np
+import matplotlib.pyplot as plt
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -184,6 +186,32 @@ async def on_message(message):
         pass
     elif command[0] == "elohistory":
         #implement elo history
+        #implement player call
+        if len(command) < 2:
+            await message.channel.send("Incorrect formatting for command, $help for help")
+            return
+        if "\"" in request:
+            # extract username (has spaces)
+            username = request[request.index("\"")+1:request.rindex("\"")]
+        else:
+            username = command[1]
+        count = 0
+        while (count < MAX_ATTEMPTS):
+            obj = api.get_elo_history(username)
+            if not obj:
+                count+=1
+            else:
+                break
+        elos = np.array([obj[0]['old_elo']] + [i['new_elo'] for i in obj])
+        x_axis = np.array(list(range(1,len(elos)+1)))
+        plt.plot(x_axis, elos)
+        plt.ylabel("Elo Change")
+        plt.savefig("temp.png")
+        with open('temp.png', 'rb') as f:
+            picture = discord.File(f)
+            await message.channel.send(file=picture)
+        os.remove("temp.png")
+        await message.channel.send("Done!")
         pass
     elif command[0] == "help":
         #help im out
