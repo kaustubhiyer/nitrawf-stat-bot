@@ -35,7 +35,7 @@ class API:
             print('\rSomething went wrong getting info for', username)
             return None
         user_obj = osu_res.json()
-        user_id, avatar = user_obj[0]['user_id'], None
+        user_id = user_obj[0]['user_id']
         response = requests.get(self.api_url + "/api/player/"+ user_id + "/summary")
         if not response:
             print('\r Something went wrong interacting with the api to get details of', username)
@@ -76,4 +76,19 @@ class API:
             return None
         return response.json()
     
+    def get_elo_history(self, username):
+        # Need the id of the player with that username to fetch it from the api, so we need to reference osu's api
+        osu_res = requests.get(f'https://osu.ppy.sh/api/get_user?k={self.osu_key}&u={username}')
+        
+        if osu_res.status_code != 200:
+            print('\rSomething went wrong getting info for', username)
+            return None
+        user_obj = osu_res.json()
+        user_id = user_obj[0]['user_id']
+        response = requests.get(self.api_url + "/api/player/"+ user_id + "/elo-history")
+        if not response:
+            print('\r Something went wrong interacting with the api to get details of', username)
+            return None
+        return response.json()
+
 
