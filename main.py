@@ -221,7 +221,7 @@ async def on_message(message):
         pass
     elif command[0] == "help":
         #help im out
-        await message.channel.send("Refer to https://github.com/kaustubhiyer/nitrawf-stat-bot")
+        await message.author.send("Refer to https://github.com/kaustubhiyer/nitrawf-stat-bot")
         pass
     else:
         #invalid command (tell em!)
