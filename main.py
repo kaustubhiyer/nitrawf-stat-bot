@@ -83,21 +83,26 @@ async def on_message(message):
             username = request[request.index("\"")+1:request.rindex("\"")]
         else:
             username = command[1]
-        obj = api.get_player_summary(username)
+        count = 0
+        while (count < MAX_ATTEMPTS):
+            obj = api.get_player_summary(username)
+            if not obj:
+                count+=1
+            else:
+                break
         description = \
-            "**\u2023 Player ID:**\t" + str(obj["id"]) + "\n" + \
-            "**\u2023 Player Rank:**\t" + str(obj["player_rank"]) + "\n" + \
-            "**\u2023 Maps Played:**\t" + str(obj["maps_played"]) + "\n" + \
-            "**\u2023 Matches Played:**\t" + str(obj["matches_played"]) + "\n" + \
-            "**\u2023 Average Score:**\t" + str(obj["average_score"]) + "\n" + \
-            "**\u2023 Average Accuracy:**\t" + str(obj["average_accuracy"]*100) + "\n"+ \
-            "**\u2023 Elo:**\t" + str(obj["elo"]) + "\n"
+            "```\u2023 Player ID:        " + str(obj["id"]) + "\n" + \
+            "\u2023 Player Rank:      " + str(obj["player_rank"]) + "\n" + \
+            "\u2023 Maps Played:      " + str(obj["maps_played"]) + "\n" + \
+            "\u2023 Matches Played:   " + str(obj["matches_played"]) + "\n" + \
+            "\u2023 Average Score:    " + str(obj["average_score"]) + "\n" + \
+            "\u2023 Average Accuracy: " + str(obj["average_accuracy"]*100) + "\n"+ \
+            "\u2023 Elo:              " + str(obj["elo"]) + "```"
         player_embed = discord.Embed(title = "nitrawf Profile for "+username, \
             url="https://osu.ppy.sh/users/"+str(obj["id"]), \
                 color=discord.Color.magenta(), \
                     description=description)
         player_embed.set_thumbnail(url="https://a.ppy.sh/"+str(obj["id"]))
-        print(obj)
         await message.channel.send(embed=player_embed)
         pass
     elif command[0] == "matches":
