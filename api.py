@@ -8,12 +8,6 @@ class API:
         # Constructor initializations
         self.api_url = url
         self.osu_key = osu_key
-        response = requests.get(url + "/")
-        if (response):
-            print(response.json())
-        else:
-            print("Failed to initialize api, api down or incorrect api url")
-        pass
 
     def get_all_players(self, page):
         response = requests.get(self.api_url + "/api/player/get-all")
