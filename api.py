@@ -35,7 +35,6 @@ class API:
             print('\rSomething went wrong getting info for', username)
             return None
         user_obj = osu_res.json()
-        print(user_obj)
         user_id, avatar = user_obj[0]['user_id'], None
         response = requests.get(self.api_url + "/api/player/"+ user_id + "/summary")
         if not response:
