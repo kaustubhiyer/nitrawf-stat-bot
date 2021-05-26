@@ -7,6 +7,8 @@ import json
 from tabulate import tabulate
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.dates as dates
+from datetime import datetime
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -203,7 +205,11 @@ async def on_message(message):
             else:
                 break
         elos = np.array([obj[0]['old_elo']] + [i['new_elo'] for i in obj])
+        times = [datetime.strptime(obj[0]['start_time'], '%Y-%m-%dT%H:%M:%S')]+ \
+            [datetime.strptime(i['end_time'], '%Y-%m-%dT%H:%M:%S') for i in obj]
+        # times = dates.date2num(times)
         x_axis = np.array(list(range(1,len(elos)+1)))
+        # plt.plot_date(times, elos)
         plt.plot(x_axis, elos)
         plt.ylabel("Elo Change")
         plt.savefig("temp.png")
@@ -215,6 +221,7 @@ async def on_message(message):
         pass
     elif command[0] == "help":
         #help im out
+        await message.channel.send("Refer to https://github.com/kaustubhiyer/nitrawf-stat-bot")
         pass
     else:
         #invalid command (tell em!)
