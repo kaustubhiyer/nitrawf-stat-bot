@@ -30,7 +30,7 @@ def clean_data(raw_data, d_type):
             cleaned_player+=[player["player_rank"]]
             cleaned_player+=[player["name"]]
             cleaned_player+=[player["average_score"]]
-            cleaned_player+=[player["average_accuracy"]*100]
+            cleaned_player+=[round(player["average_accuracy"]*100, 2)]
             cleaned_player+=[player["matches_played"]]
             cleaned_player+=[player["elo"]]
             data+=[cleaned_player]
@@ -56,7 +56,7 @@ def clean_data(raw_data, d_type):
             cleaned_player+=[player["player_name"]]
             cleaned_player+=[player["average_position"]]
             cleaned_player+=[player["average_score"]]
-            cleaned_player+=[player["average_accuracy"]*100]
+            cleaned_player+=[round(player["average_accuracy"]*100, 2)]
             cleaned_player+=[str(player["old_elo"])+'-'+str(player['new_elo'])]
             data+=[cleaned_player]
         return cols, data
@@ -125,7 +125,7 @@ async def on_message(message):
             "\u2023 Maps Played:      " + str(obj["maps_played"]) + "\n" + \
             "\u2023 Matches Played:   " + str(obj["matches_played"]) + "\n" + \
             "\u2023 Average Score:    " + str(obj["average_score"]) + "\n" + \
-            "\u2023 Average Accuracy: " + str(obj["average_accuracy"]*100) + "\n"+ \
+            "\u2023 Average Accuracy: " + str(round(obj["average_accuracy"]*100, 2)) + "\n"+ \
             "\u2023 Elo:              " + str(obj["elo"]) + "```"
         player_embed = discord.Embed(title = "nitrawf Profile for "+username, \
             url="https://osu.ppy.sh/users/"+str(obj["id"]), \
