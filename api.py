@@ -15,11 +15,17 @@ class API:
             print("Failed to initialize api, api down or incorrect api url")
         pass
 
-    def get_all_players(self):
+    def get_all_players(self, page):
         response = requests.get(self.api_url + "/api/player/get-all")
         if not response:
-            return None
-        return response.json()
+            return None, 0
+        obj = response.json()
+        max_pg = len(obj) // 5 + 1 if len(obj) % 5 != 0 else len(obj) // 5
+        if page > max_pg:
+            return obj[0:5], max_pg
+        elif page == max_pg:
+            return obj[(page-1)*5:], max_pg
+        return obj[(page-1)*5:(page)*5], max_pg
 
     def get_player_summary(self, username):
         # Need the id of the player with that username to fetch it from the api, so we need to reference osu's api
@@ -28,10 +34,12 @@ class API:
         if osu_res.status_code != 200:
             print('\rSomething went wrong getting info for', username)
             return None
-        
-        user_id = osu_res.json()[0]['user_id']
+        user_obj = osu_res.json()
+        print(user_obj)
+        user_id, avatar = user_obj[0]['user_id'], None
         response = requests.get(self.api_url + "/api/player/"+ user_id + "/summary")
         if not response:
+            print('\r Something went wrong interacting with the api to get details of', username)
             return None
         return response.json()
     
@@ -63,4 +71,4 @@ class API:
             return None
         return response.json()
     
-    
+
