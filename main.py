@@ -31,6 +31,18 @@ def clean_data(raw_data, d_type):
             cleaned_player+=[player["elo"]]
             data+=[cleaned_player]
         return cols, data
+    elif (d_type == "mlist"):
+        #matches list
+        cols = ["Match ID", "Match Name", "Start Time", "End Time"]
+        data = []
+        for match in raw_data:
+            cleaned_match = []
+            cleaned_match+=[match["id"]]
+            cleaned_match+=[match["name"]]
+            cleaned_match+=[match["start_time"][:10] + " " + match["start_time"][11:16]]
+            cleaned_match+=[match["end_time"][:10] + " " + match["end_time"][11:16]]
+            data+=[cleaned_match]
+        return cols, data
         
 
 
@@ -107,6 +119,30 @@ async def on_message(message):
         pass
     elif command[0] == "matches":
         #implement matches call
+        # find which page
+        index_page_no = (command.index("-p") + 1) if "-p" in command else len(command)
+        if (len(command) > index_page_no) and command[index_page_no].isnumeric():
+            page = int(command[index_page_no])
+        else:
+            page = 1
+        #implement matches call
+        count = 0
+        while (count < MAX_ATTEMPTS):
+            matches_raw, max_pg = api.get_all_matches(page)
+            if not matches_raw:
+                count+=1
+            else:
+                break
+        if count == 3:
+            await message.channel.send("Failed to retreive from API. Please try again")
+            return
+        # need to clean up the data
+        cols, matches = clean_data(matches_raw, "mlist")
+        table = tabulate(matches, headers=cols, tablefmt="fancy_grid", \
+            colalign=("left", "center", "center", "center"))
+        table = table + "\nPage " + (str(page) if page <= max_pg else "1") + " out of " + str(max_pg) 
+        await message.channel.send("```"+table+"```")
+        return
         pass
     elif command[0] == "match":
         #implement match call

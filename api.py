@@ -56,12 +56,18 @@ class API:
             return None
         return response.json()
 
-    def get_all_matches(self):
+    def get_all_matches(self, page):
         response = requests.get(self.api_url + "/api/match/get-all")
         if not response:
             print(response.status_code)
-            return None
-        return response.json()
+            return None, 0
+        obj = response.json()
+        max_pg = len(obj) // 5 + 1 if len(obj) % 5 != 0 else len(obj) // 5
+        if page > max_pg:
+            return obj[0:5], max_pg
+        elif page == max_pg:
+            return obj[(page-1)*5:], max_pg
+        return obj[(page-1)*5:(page)*5], max_pg
     
     def get_match_summary(self, match_id):
         response = requests.get(self.api_url + '/api/match/get-summary/' + match_id)
