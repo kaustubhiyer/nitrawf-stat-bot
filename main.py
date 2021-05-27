@@ -43,7 +43,7 @@ def clean_data(raw_data, d_type):
             cleaned_match = []
             cleaned_match+=[match["id"]]
             cleaned_match+=[match["name"]]
-            cleaned_match+=[match["start_time"][:10] + " " + match["start_time"][11:16]]
+            cleaned_match+=[match["start_time"][2:10] + " " + match["start_time"][11:16]]
             # cleaned_match+=[match["end_time"][:10] + " " + match["end_time"][11:16]]
             data+=[cleaned_match]
         return cols, data
