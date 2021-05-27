@@ -207,6 +207,8 @@ async def on_message(message):
                 count+=1
             else:
                 break
+        if count ==  MAX_ATTEMPTS:
+            await message.channel.send("Player not in database, or I messed up, tee hee!")
         elos = np.array([obj[0]['old_elo']] + [i['new_elo'] for i in obj])
         times = [datetime.strptime(obj[0]['start_time'], '%Y-%m-%dT%H:%M:%S')]+ \
             [datetime.strptime(i['end_time'], '%Y-%m-%dT%H:%M:%S') for i in obj]
