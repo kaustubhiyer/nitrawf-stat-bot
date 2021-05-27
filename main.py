@@ -101,7 +101,7 @@ async def on_message(message):
         table = tabulate(players, headers=cols, tablefmt="fancy_grid", \
             colalign=("left", "left", "center", "center", "center", "right"))
         table = table + "\nPage " + (str(page) if page <= max_pg else "1") + " out of " + str(max_pg) 
-        img = Image.new('RGB', (530, 240), color = (35, 39, 42))
+        img = Image.new('RGB', (540, 240), color = (35, 39, 42))
         d = ImageDraw.Draw(img)
         fnt = ImageFont.truetype('DejaVuSansMono.ttf', 12)
         d.text((10,10), table, fill=(255,255,255), font=fnt)
