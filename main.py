@@ -158,7 +158,7 @@ async def on_message(message):
         # need to clean up the data
         cols, matches = clean_data(matches_raw, "mlist")
         ## GET MOST RECENT MATCHES FIRST
-        matches.reverse()
+        matches = matches [::-1]
         table = tabulate(matches, headers=cols, tablefmt="fancy_grid", \
             colalign=("left", "center", "center"))
         table = table + "\nPage " + (str(page) if page <= max_pg else "1") + " out of " + str(max_pg) 
