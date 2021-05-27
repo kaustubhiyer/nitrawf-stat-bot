@@ -239,7 +239,7 @@ async def on_message(message):
         times = [datetime.strptime(obj[0]['start_time'], '%Y-%m-%dT%H:%M:%S')]+ \
             [datetime.strptime(i['end_time'], '%Y-%m-%dT%H:%M:%S') for i in obj]
         # times = dates.date2num(times)
-        x_axis = np.array(list(range(1,len(elos)+1)))
+        x_axis = np.array(list(range(0,len(elos))))
         # plt.plot_date(times, elos)
         plt.plot(x_axis, elos)
         plt.ylabel("Elo Change")
