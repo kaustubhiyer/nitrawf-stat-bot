@@ -56,6 +56,7 @@ class API:
             print(response.status_code)
             return None, 0
         obj = response.json()
+        obj.reverse()
         max_pg = len(obj) // 5 + 1 if len(obj) % 5 != 0 else len(obj) // 5
         if page > max_pg:
             return obj[0:5], max_pg

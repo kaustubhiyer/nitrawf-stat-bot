@@ -158,7 +158,6 @@ async def on_message(message):
         # need to clean up the data
         cols, matches = clean_data(matches_raw, "mlist")
         ## GET MOST RECENT MATCHES FIRST
-        matches = matches [::-1]
         table = tabulate(matches, headers=cols, tablefmt="fancy_grid", \
             colalign=("left", "center", "center"))
         table = table + "\nPage " + (str(page) if page <= max_pg else "1") + " out of " + str(max_pg) 
@@ -182,9 +181,9 @@ async def on_message(message):
             await message.channel.send("Failed to retreive from API. Please try again")
             return
         
-        print(match_raw[0])
         # Need to clean match
         cols, match = clean_data(match_raw, "match")
+        match = sorted(match, key=lambda x: x[2], reverse=True)
         table = tabulate(match, headers=cols, tablefmt="fancy_grid", \
             colalign=("left", "center", "center", "center", "center"))
         await message.channel.send('```'+table+'```')
