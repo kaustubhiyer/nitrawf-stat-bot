@@ -37,14 +37,14 @@ def clean_data(raw_data, d_type):
         return cols, data
     elif (d_type == "mlist"):
         #matches list
-        cols = ["Match ID", "Match Name", "Start Time", "End Time"]
+        cols = ["Match ID", "Match Name", "Start Time"]
         data = []
         for match in raw_data:
             cleaned_match = []
             cleaned_match+=[match["id"]]
             cleaned_match+=[match["name"]]
             cleaned_match+=[match["start_time"][:10] + " " + match["start_time"][11:16]]
-            cleaned_match+=[match["end_time"][:10] + " " + match["end_time"][11:16]]
+            # cleaned_match+=[match["end_time"][:10] + " " + match["end_time"][11:16]]
             data+=[cleaned_match]
         return cols, data
     elif (d_type == "match"):
@@ -119,6 +119,8 @@ async def on_message(message):
                 count+=1
             else:
                 break
+        if count == MAX_ATTEMPTS:
+            await message.channel.send("You aren't in the db, or something went wrong...")
         description = \
             "```\u2023 Player ID:        " + str(obj["id"]) + "\n" + \
             "\u2023 Player Rank:      " + str(obj["player_rank"]) + "\n" + \
@@ -155,8 +157,10 @@ async def on_message(message):
             return
         # need to clean up the data
         cols, matches = clean_data(matches_raw, "mlist")
+        ## GET MOST RECENT MATCHES FIRST
+        matches.reverse()
         table = tabulate(matches, headers=cols, tablefmt="fancy_grid", \
-            colalign=("left", "center", "center", "center"))
+            colalign=("left", "center", "center"))
         table = table + "\nPage " + (str(page) if page <= max_pg else "1") + " out of " + str(max_pg) 
         await message.channel.send("```"+table+"```")
         return
@@ -212,7 +216,9 @@ async def on_message(message):
         # plt.plot_date(times, elos)
         plt.plot(x_axis, elos)
         plt.ylabel("Elo Change")
+        plt.xlabel("Matches")
         plt.savefig("temp.png")
+        plt.close()
         with open('temp.png', 'rb') as f:
             picture = discord.File(f)
             await message.channel.send(file=picture)
