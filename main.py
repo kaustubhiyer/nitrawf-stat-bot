@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as dates
 from datetime import datetime
+from PIL import Image, ImageDraw, ImageFont
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -100,7 +101,16 @@ async def on_message(message):
         table = tabulate(players, headers=cols, tablefmt="fancy_grid", \
             colalign=("left", "left", "center", "center", "center", "right"))
         table = table + "\nPage " + (str(page) if page <= max_pg else "1") + " out of " + str(max_pg) 
-        await message.channel.send("```"+table+"```")
+        img = Image.new('RGB', (520, 240), color = (35, 39, 42))
+        d = ImageDraw.Draw(img)
+        fnt = ImageFont.truetype('DejaVuSansMono.ttf', 12)
+        d.text((10,10), table, fill=(255,255,255), font=fnt)
+        img.save('players.png')
+        with open('players.png', 'rb') as f:
+            picture = discord.File(f)
+            await message.channel.send(file=picture)
+        # send
+        # await message.channel.send("```"+table+"```")
         return
     elif command[0] == "player":
         #implement player call
@@ -161,7 +171,15 @@ async def on_message(message):
         table = tabulate(matches, headers=cols, tablefmt="fancy_grid", \
             colalign=("left", "center", "center"))
         table = table + "\nPage " + (str(page) if page <= max_pg else "1") + " out of " + str(max_pg) 
-        await message.channel.send("```"+table+"```")
+        img = Image.new('RGB', (440, 245), color = (35, 39, 42))
+        d = ImageDraw.Draw(img)
+        fnt = ImageFont.truetype('DejaVuSansMono.ttf', 12)
+        d.text((10,10), table, fill=(255,255,255), font=fnt)
+        img.save('matches.png')
+        with open('matches.png', 'rb') as f:
+            picture = discord.File(f)
+            await message.channel.send(file=picture)
+        # await message.channel.send("```"+table+"```")
         return
         pass
     elif command[0] == "match":
@@ -186,7 +204,15 @@ async def on_message(message):
         match = sorted(match, key=lambda x: x[2], reverse=True)
         table = tabulate(match, headers=cols, tablefmt="fancy_grid", \
             colalign=("left", "center", "center", "center", "center"))
-        await message.channel.send('```'+table+'```')
+        height_m = len(match)-1
+        img = Image.new('RGB', (515, 100+(32*height_m)), color = (35, 39, 42))
+        d = ImageDraw.Draw(img)
+        fnt = ImageFont.truetype('DejaVuSansMono.ttf', 12)
+        d.text((10,10), table, fill=(255,255,255), font=fnt)
+        img.save('match.png')
+        with open('match.png', 'rb') as f:
+            picture = discord.File(f)
+            await message.channel.send(file=picture)
         return
         pass
     elif command[0] == "elohistory":
